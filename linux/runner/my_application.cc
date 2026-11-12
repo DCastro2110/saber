@@ -28,6 +28,10 @@ static void my_application_activate(GApplication* application) {
   gtk_window_set_default_size(window, 1280, 720);
 
   g_autoptr(FlDartProject) project = fl_dart_project_new();
+  // Impeller became the default on Linux in Flutter 3.47, but it renders
+  // handwritten strokes with jagged (aliased) edges. Skia's analytic
+  // anti-aliasing draws them smoothly.
+  fl_dart_project_set_enable_impeller(project, FALSE);
   fl_dart_project_set_dart_entrypoint_arguments(project, self->dart_entrypoint_arguments);
 
   FlView* view = fl_view_new(project);

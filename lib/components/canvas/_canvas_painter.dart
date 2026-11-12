@@ -98,7 +98,7 @@ class CanvasPainter extends CustomPainter {
         lastColor = color;
       }
 
-      canvas.drawPath(_selectPath(stroke), Paint()..color = color);
+      canvas.drawPath(stroke.highQualityPath, Paint()..color = color);
     }
 
     if (needToRestoreCanvasLayer) canvas.restore();
@@ -147,7 +147,7 @@ class CanvasPainter extends CustomPainter {
           shapePaint,
         );
       } else {
-        canvas.drawPath(_selectPath(stroke), paint);
+        canvas.drawPath(stroke.highQualityPath, paint);
       }
     }
   }
@@ -180,7 +180,7 @@ class CanvasPainter extends CustomPainter {
 
   void _drawLaserStroke(Canvas canvas, LaserStroke stroke) {
     canvas.drawPath(
-      _selectPath(stroke),
+      stroke.highQualityPath,
       Paint()
         ..color = stroke.color.withInversion(invert)
         ..maskFilter = MaskFilter.blur(
@@ -294,8 +294,4 @@ class CanvasPainter extends CustomPainter {
       currentScale >= _zoomThreshold && (strokeSize * currentScale) >= 3;
 
   static const _zoomThreshold = 0.9;
-  Path _selectPath(Stroke stroke) => switch (currentScale) {
-    < _zoomThreshold => stroke.lowQualityPath,
-    _ => stroke.highQualityPath,
-  };
 }

@@ -75,6 +75,28 @@ class Pen extends Tool {
     _currentPen = currentPen;
   }
 
+  void saveToPrefs() {
+    final (colorStow, optionsStow) = switch (toolId) {
+      .fountainPen => (
+        stows.lastFountainPenColor,
+        stows.lastFountainPenOptions,
+      ),
+      .ballpointPen => (
+        stows.lastBallpointPenColor,
+        stows.lastBallpointPenOptions,
+      ),
+      .highlighter => (
+        stows.lastHighlighterColor,
+        stows.lastHighlighterOptions,
+      ),
+      .pencil => (stows.lastPencilColor, stows.lastPencilOptions),
+      .shapePen => (stows.lastShapePenColor, stows.lastShapePenOptions),
+      _ => (null, null),
+    };
+    colorStow?.value = color.toARGB32();
+    optionsStow?.notifyListeners();
+  }
+
   void onDragStart(
     Offset position,
     EditorPage page,

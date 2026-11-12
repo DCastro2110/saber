@@ -1595,11 +1595,13 @@ class EditorState extends State<Editor> {
               updateColorBar(color);
 
               if (currentTool is Highlighter) {
-                (currentTool as Highlighter).color = color.withAlpha(
-                  Highlighter.alpha,
-                );
+                (currentTool as Highlighter)
+                  ..color = color.withAlpha(Highlighter.alpha)
+                  ..saveToPrefs();
               } else if (currentTool is Pen) {
-                (currentTool as Pen).color = color;
+                (currentTool as Pen)
+                  ..color = color
+                  ..saveToPrefs();
               } else if (currentTool is Select) {
                 // Changes color of selected strokes
                 final select = currentTool as Select;

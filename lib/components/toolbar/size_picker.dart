@@ -79,6 +79,7 @@ class _SizeSlider extends StatelessWidget {
     setState(() {
       pen.options.size = newSize;
     });
+    pen.saveToPrefs();
   }
 
   @override
