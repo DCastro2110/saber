@@ -34,13 +34,15 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
           git remote add upstream https://github.com/saber-notes/saber.git
-          git fetch upstream main
-          git rebase upstream/main
+          git fetch --tags upstream main
+          upstreamTag=$(git tag --list 'v*' --sort=-v:refname --merged upstream/main | head -n 1)
+          echo "Latest upstream release: $upstreamTag"
+          git rebase --onto "$upstreamTag" upstream/main
 
           buildName=$(grep -oP "(?<=buildName = ').*(?=')" lib/data/version.dart)
-          upstreamSha=$(git rev-parse --short upstream/main)
           forkSha=$(git rev-parse --short "$GITHUB_SHA")
-          tag="v${buildName}-${upstreamSha}-${forkSha}"
+          tag="v${buildName}-fork-${forkSha}"
+          echo "upstreamTag=$upstreamTag" >> "$GITHUB_OUTPUT"
           echo "buildName=$buildName" >> "$GITHUB_OUTPUT"
           echo "tag=$tag" >> "$GITHUB_OUTPUT"
 
@@ -99,6 +101,6 @@ jobs:
             --repo "$GITHUB_REPOSITORY" \
             --target "$GITHUB_SHA" \
             --title "Saber ${{ steps.rebase.outputs.tag }}" \
-            --notes "Upstream saber-notes/saber@$(git rev-parse --short upstream/main) with the fork's patches." \
+            --notes "Saber ${{ steps.rebase.outputs.upstreamTag }} with the fork's patches." \
             --latest \
             linux/AppImage/Saber-*.AppImage*
